@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./libs/jquery.js"></script>
+    <script src="./libs/sigma.min.js"></script>
+    <style>
+        html {
+            user-select: none;
+        }
+
+        #container {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        #player-container {
+            position: absolute;
+            top: 0;
+            height: 11%;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            font-size: 5vh;
+        }
+
+        #player-container>span {
+            padding-left: 5vw;
+        }
+
+        #graph-container {
+            position: absolute;
+            top: 11%;
+            bottom: 0;
+            left: 0;
+            width: 80%;
+        }
+
+        #status-container {
+            position: absolute;
+            top: 11%;
+            height: 39%;
+            left: 80%;
+            right: 0;
+            text-align: center;
+            font-size: 3vh;
+        }
+
+        #status-container>span {
+            display: block;
+        }
+
+        span.before-use {
+            color: orange;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        span.after-use {
+            color: gray;
+            text-decoration: underline;
+            cursor: no-drop;
+        }
+
+        #point-container {
+            position: absolute;
+            top: 50%;
+            bottom: 0;
+            left: 80%;
+            right: 0;
+            text-align: center;
+            font-size: 3vh;
+        }
+
+        #point-container>span {
+            display: block;
+        }
+    </style>
+    <script src="./libs/data.js"></script>
+    <script src="./libs/graph-maker.js"></script>
+    <script src="./plugins/sigma.plugins.dragNodes/sigma.plugins.dragNodes.js"></script>
+    <script src="./plugins/sigma.renderers.edgeLabels/settings.js"></script>
+    <script src="./plugins/sigma.renderers.edgeLabels/sigma.canvas.edges.labels.def.js"></script>
+</head>
+
+<body>
+    <div id="container">
+        <div id="player-container">
+            <span>生命: <span id="hp">9999</span></span>
+            <span>金币: <span id="money">9999</span></span>
+            <span>攻击力：<span id="atk">9999</span></span>
+            <span>防御力：<span id="def">9999</span></span>
+        </div>
+        <div id="graph-container"></div>
+        <div id="status-container">
+            <span>当前所在点: <span id="cur" href="#">9999</span></span>
+            <span id="current-type"></span>
+            <span id="current-service"></span>
+            <span>可以前往</span>
+            <span id="neighbors"></span>
+        </div>
+        <div id="point-container">
+            <span>这个框将来会显示节点信息</span>
+        </div>
+    </div>
+    <script src="./libs/main-page.js"></script>
+</body>
+
+</html>
