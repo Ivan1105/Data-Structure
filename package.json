@@ -1,0 +1,12 @@
+{
+  "name": "shortest-path-game",
+  "version": "0.0.1",
+  "description": "a game played at undirected-graph",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-packager . shortest-path --win --out ../ --asar --arch=x64 --app-version=0.0.1 --electron-version=12.0.5 --icon=./SummerPockets.ico"
+  },
+  "author": "Ivan",
+  "license": "ISC"
+}
