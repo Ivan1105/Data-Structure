@@ -1,3 +1,6 @@
+/**
+ * 更新当前节点信息
+ */
 function updateCurrentPoint() {
 	$('#cur').html(player.atPoint);
 	let type = s.graph.nodes(player.atPoint).type;
@@ -35,6 +38,12 @@ function updateCurrentPoint() {
 	else $('#current-service').addClass('before-use');
 }
 
+/** 记录当前点的相邻节点 */
+var adjacent = {};
+
+/**
+ * 刷新图
+ */
 function refreshGraph() {
 	s.graph.nodes().forEach(function (e) {
 		if (e.id == player.atPoint) e.color = '#f00';
@@ -43,16 +52,29 @@ function refreshGraph() {
 	});
 
 	let str = '';
+	adjacent = {};
 	s.graph.edges().forEach(function (e) {
-		e.label = '' + e.monster.damage;
-		if (e.source == player.atPoint) str += ' <span class="before-use" onclick="goForward(' + e.id + ')">' + e.target + '</span>';
-		else if (e.target == player.atPoint) str += ' <span class="before-use" onclick="goForward(' + e.id + ')">' + e.source + '</span>';
+		if (e.alive) e.label = '' + e.monster.damage;
+		else e.label = '0';
+
+		if (e.source == player.atPoint) {
+			adjacent[e.target] = e;
+			str += ' <span class="before-use" onclick="showPoint(' + e.target + ')">' + e.target + '</span>';
+		}
+		else if (e.target == player.atPoint) {
+			adjacent[e.source] = e;
+			str += ' <span class="before-use" onclick="showPoint(' + e.source + ')">' + e.source + '</span>';
+		}
 	});
 
+	showPoint(player.atPoint);
 	$('#neighbors').html(str);
 	s.refresh();
 }
 
+/**
+ * 重置点的位置
+ */
 function resetGraph() {
 	s.graph.nodes().forEach(function (e) {
 		e.x = g.nodes[e.id].x;
@@ -68,8 +90,62 @@ $('#current-service').click(function () {
 	node.type.use(node);
 });
 
+$('#gotoPoint').click(function () {
+	if (!$(this).hasClass('before-use')) return;
+	goForward(adjacent[$('#to').html()]);
+});
+
+function showPoint(node) {
+	node = s.graph.nodes(node);
+	let type = node.type;
+	$('#to').html(node.id);
+
+	$('#to-type').html('');
+	$('#to-service').html('');
+	$('#monster-info').html('');
+	$('#monster-hp').html('');
+	$('#monster-atk').html('');
+	$('#monster-def').html('');
+
+	if (type instanceof Shop) {
+		let str = '';
+		if (type.atk) str += type.atk + '攻击力 ';
+		if (type.def) str += type.def + '防御力 ';
+		str += '- $' + type.cost;
+
+		$('#to-type').html('商店');
+		$('#to-service').html(str);
+	}
+	else if (type instanceof Hotel) {
+		let str = '';
+		if (type.maxhp) str += '增加' + type.maxhp + '生命上限 ';
+		else str += '回复' + type.hp + '生命 ';
+		str += '- $' + type.cost;
+
+		$('#to-type').html('旅店');
+		$('#to-service').html(str);
+	}
+	else if (type instanceof Treasure) {
+		let str = '金币 - $' + type.money;
+
+		$('#to-type').html('宝箱');
+		$('#to-service').html(str);
+	}
+
+	if (adjacent[node.id]) {
+		let edge = adjacent[node.id];
+		if (edge.alive) {
+			$('#monster-info').html('怪物');
+			$('#monster-hp').html('生命值：' + edge.monster.hp);
+			$('#monster-atk').html('攻击力：' + edge.monster.atk);
+			$('#monster-def').html('防御力：' + edge.monster.def);
+		}
+		$('#gotoPoint').attr('class', 'before-use');
+	}
+	else $('#gotoPoint').attr('class', 'after-use');
+}
+
 function goForward(edge) {
-	edge = s.graph.edges(edge);
 	let monster = edge.monster;
 	if (monster.fight(edge)) {
 		if (player.atPoint == edge.source) player.atPoint = edge.target;
@@ -142,6 +218,10 @@ var s = new sigma({
 		maxEdgeSize: 4,
 		edgeLabelSize: 'proportional'
 	}
+});
+
+s.bind('clickNode', function (e) {
+	showPoint(e.data.node.id);
 });
 
 var dragListener = sigma.plugins.dragNodes(s, s.renderers[0]);

@@ -1,2 +1,12 @@
-# Data-Structure
-Course Design of data-structure
+# 数据结构课设
+
+在做了在做了
+
+## 0.0.2
+
+* 修复了先判断血量再判断怪物是否被击杀的bug
+* 新增了节点信息显示
+
+## 0.0.1
+
+* 实现了第一层的demo效果，虽然拉跨
