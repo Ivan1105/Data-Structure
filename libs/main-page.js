@@ -67,7 +67,7 @@ function refreshGraph() {
 		}
 	});
 
-	showPoint(player.atPoint);
+	showPoint(g.endPoint);
 	$('#neighbors').html(str);
 	s.refresh();
 }
@@ -84,18 +84,32 @@ function resetGraph() {
 	s.refresh();
 }
 
+/**
+ * 点击使用当前点的设施
+ */
 $('#current-service').click(function () {
 	if (!$(this).hasClass('before-use')) return;
 	let node = s.graph.nodes(player.atPoint);
 	node.type.use(node);
 });
 
+/**
+ * 前往下一个点
+ */
 $('#gotoPoint').click(function () {
 	if (!$(this).hasClass('before-use')) return;
 	goForward(adjacent[$('#to').html()]);
 });
 
+/**
+ * 查看节点信息
+ * @param {number} node 
+ */
 function showPoint(node) {
+	let obj = calcShortestPath(g, player.atPoint, node);
+	$('#path-way').html(obj.pathway.join('->'));
+	$('#path-damage').html(obj.value);
+
 	node = s.graph.nodes(node);
 	let type = node.type;
 	$('#to').html(node.id);
@@ -145,6 +159,10 @@ function showPoint(node) {
 	else $('#gotoPoint').attr('class', 'after-use');
 }
 
+/**
+ * 经过边edge
+ * @param {Object} edge 
+ */
 function goForward(edge) {
 	let monster = edge.monster;
 	if (monster.fight(edge)) {
@@ -191,38 +209,43 @@ var g = maker(15, 20, [{
 	type: monsters[3]
 }]);
 
-var dis = new Array(g.nodes.length);
-for (let i in g.nodes) dis[i] = new Array(g.nodes.length);
+var s;
 
-for (let i in g.nodes) {
-	g.nodes[i].label = '' + g.nodes[i].id;
-	g.nodes[i].x = Math.random();
-	g.nodes[i].y = Math.random();
-	g.nodes[i].size = 1;
-}
-
-for (let i in g.edges) {
-	dis[g.edges[i].source][g.edges[i].target] = dis[g.edges[i].target][g.edges[i].source] = g.edges[i].value;
-	g.edges[i].color = '#ccc';
-	g.edges[i].size = 1;
-}
-
-var s = new sigma({
-	graph: g,
-	renderer: {
-		container: document.getElementById('graph-container'),
-		type: 'canvas'
-	},
-	settings: {
-		minEdgeSize: 0.5,
-		maxEdgeSize: 4,
-		edgeLabelSize: 'proportional'
+$(function () {
+	for (let i in g.nodes) {
+		g.nodes[i].label = '' + g.nodes[i].id;
+		g.nodes[i].x = Math.random();
+		g.nodes[i].y = Math.random();
+		g.nodes[i].size = 1;
 	}
-});
 
-s.bind('clickNode', function (e) {
-	showPoint(e.data.node.id);
-});
+	for (let i in g.edges) {
+		g.edges[i].color = '#ccc';
+		g.edges[i].size = 1;
+	}
 
-var dragListener = sigma.plugins.dragNodes(s, s.renderers[0]);
-player.atPoint = g.startPoint;
+	s = new sigma({
+		graph: g,
+		renderer: {
+			container: document.getElementById('graph-container'),
+			type: 'canvas'
+		},
+		settings: {
+			minEdgeSize: 0.5,
+			maxEdgeSize: 4,
+			edgeLabelSize: 'proportional',
+			doubleClickEnabled: false
+		}
+	});
+
+	s.bind('clickNode', function (e) {
+		showPoint(e.data.node.id);
+	});
+
+	s.bind('doubleClickNode', function (e) {
+		$('#gotoPoint').click();
+	})
+
+	var dragListener = sigma.plugins.dragNodes(s, s.renderers[0]);
+	player.atPoint = g.startPoint;
+});

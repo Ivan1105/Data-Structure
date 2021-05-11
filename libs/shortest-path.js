@@ -84,11 +84,14 @@ function dijkstra(G, s, t) {
 	const Inf = 0x7fffffff;
 	let dis = new Array(G.nodes);
 	let used = new Array(G.nodes);
+	let pre = new Array(G.nodes);
 
 	for (let i = 0; i < G.nodes; i++) {
 		dis[i] = Inf;
 		used[i] = false;
+		pre[i] = -1;
 	}
+
 	dis[s] = 0;
 	let q = new Heap();
 	q.push(new Edge(s, 0));
@@ -104,19 +107,34 @@ function dijkstra(G, s, t) {
 			let v = G.head[s][i].endPoint;
 			let w = G.head[s][i].value;
 			if (!used[v] && dis[s] + w < dis[v]) {
+				pre[v] = s;
 				dis[v] = dis[s] + w;
 				q.push(new Edge(v, dis[v]));
 			}
 		}
 	}
-	return dis[t];
+
+	let path = [];
+	traceBack(path, pre, t);
+	return { pathway: path, value: dis[t] };
 }
 
-function read(obj) {
+function traceBack(path, pre, t) {
+	if (pre[t] != -1) traceBack(path, pre, pre[t]);
+	path.push(t);
+}
+
+function calcShortestPath(obj, s, t) {
 	let G = new Graph(obj.nodes.length, obj.edges.length);
 	for (let i in obj.edges) {
-		G.addEdge(obj.edges[i].source, obj.edges[i].target, obj.edges[i].value);
-		G.addEdge(obj.edges[i].target, obj.edges[i].source, obj.edges[i].value);
+		if (obj.edges[i].alive) {
+			G.addEdge(obj.edges[i].source, obj.edges[i].target, obj.edges[i].monster.damage);
+			G.addEdge(obj.edges[i].target, obj.edges[i].source, obj.edges[i].monster.damage);
+		}
+		else {
+			G.addEdge(obj.edges[i].source, obj.edges[i].target, 0);
+			G.addEdge(obj.edges[i].target, obj.edges[i].source, 0);
+		}
 	}
-	return dijkstra(G, obj.startPoint, obj.endPoint);
+	return dijkstra(G, s, t);
 }
