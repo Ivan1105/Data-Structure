@@ -70,7 +70,7 @@
             cursor: no-drop;
         }
 
-        #point-container {
+        #info-container {
             position: absolute;
             top: 50%;
             bottom: 0;
@@ -80,15 +80,16 @@
             font-size: 3vh;
         }
 
-        #point-container>span {
+        #info-container>div>span {
             display: block;
         }
     </style>
-    <script src="./libs/data.js"></script>
-    <script src="./libs/graph-maker.js"></script>
     <script src="./plugins/sigma.plugins.dragNodes/sigma.plugins.dragNodes.js"></script>
     <script src="./plugins/sigma.renderers.edgeLabels/settings.js"></script>
     <script src="./plugins/sigma.renderers.edgeLabels/sigma.canvas.edges.labels.def.js"></script>
+    <script src="./libs/data.js"></script>
+    <script src="./libs/graph-maker.js"></script>
+    <script src="./libs/shortest-path.js"></script>
 </head>
 
 <body>
@@ -103,19 +104,25 @@
         <div id="status-container">
             <span>当前所在点: <span id="cur">9999</span></span>
             <span id="current-type"></span>
-            <span id="current-service"></span>
+            <span><span id="current-service"></span></span>
             <span>可以前往</span>
             <span id="neighbors"></span>
         </div>
-        <div id="point-container">
-            <span>节点：<span id="to"></span></span>
-            <span id="monster-info"></span>
-            <span id="monster-hp"></span>
-            <span id="monster-atk"></span>
-            <span id="monster-def"></span>
-            <span id="to-type"></span>
-            <span id="to-service"></span>
-            <span id="gotoPoint" class="after-use">确认前往</span>
+        <div id="info-container">
+            <div id="node-info">
+                <span>节点：<span id="to"></span></span>
+                <span id="to-type"></span>
+                <span id="to-service"></span>
+                <span>路线：<span id="path-way"></span></span>
+                <span>累计伤害：<span id="path-damage"></span></span>
+                <span><span id="gotoPoint" class="after-use">确认前往</span></span>
+            </div>
+            <div id="edge-info" style="display: none;">
+                <span id="monster-info"></span>
+                <span id="monster-hp"></span>
+                <span id="monster-atk"></span>
+                <span id="monster-def"></span>
+            </div>
         </div>
     </div>
     <script src="./libs/main-page.js"></script>
