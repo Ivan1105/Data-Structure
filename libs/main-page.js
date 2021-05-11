@@ -28,7 +28,7 @@ function updateCurrentPoint() {
 		$('#current-service').html(str);
 	}
 	else if (type instanceof Treasure) {
-		let str = '金币 - $' + type.money;
+		let str = '金币 + $' + type.money;
 
 		$('#current-type').html('宝箱');
 		$('#current-service').html(str);
@@ -55,7 +55,10 @@ function refreshGraph() {
 	adjacent = {};
 	s.graph.edges().forEach(function (e) {
 		if (e.alive) e.label = '' + e.monster.damage;
-		else e.label = '0';
+		else {
+			e.label = '0';
+			e.type = 'dashed';
+		}
 
 		if (e.source == player.atPoint) {
 			adjacent[e.target] = e;
@@ -106,6 +109,7 @@ $('#gotoPoint').click(function () {
  * @param {number} node 
  */
 function showPoint(node) {
+	g.edges = s.graph.edges();
 	let obj = calcShortestPath(g, player.atPoint, node);
 	$('#path-way').html(obj.pathway.join('->'));
 	$('#path-damage').html(obj.value);
@@ -114,12 +118,10 @@ function showPoint(node) {
 	let type = node.type;
 	$('#to').html(node.id);
 
+	$('#node-info').attr('class', 'show');
+	$('#edge-info').attr('class', 'hidden');
 	$('#to-type').html('');
 	$('#to-service').html('');
-	$('#monster-info').html('');
-	$('#monster-hp').html('');
-	$('#monster-atk').html('');
-	$('#monster-def').html('');
 
 	if (type instanceof Shop) {
 		let str = '';
@@ -140,7 +142,7 @@ function showPoint(node) {
 		$('#to-service').html(str);
 	}
 	else if (type instanceof Treasure) {
-		let str = '金币 - $' + type.money;
+		let str = '金币 + $' + type.money;
 
 		$('#to-type').html('宝箱');
 		$('#to-service').html(str);
@@ -159,6 +161,20 @@ function showPoint(node) {
 	else $('#gotoPoint').attr('class', 'after-use');
 }
 
+function showEdge(edge) {
+	if (!edge.alive) {
+		$('#node-info').attr('class', 'hidden');
+		$('#edge-info').attr('class', 'hidden');
+		return;
+	}
+	$('#node-info').attr('class', 'hidden');
+	$('#edge-info').attr('class', 'show');
+	$('#source-target').html(edge.source + '<->' + edge.target);
+	$('#monster-hp').html(edge.monster.hp);
+	$('#monster-atk').html(edge.monster.atk);
+	$('#monster-def').html(edge.monster.def);
+}
+
 /**
  * 经过边edge
  * @param {Object} edge 
@@ -171,47 +187,50 @@ function goForward(edge) {
 	}
 }
 
-var g = maker(15, 20, [{
-	rate: 20,
-	type: hotels[0]
-}, {
-	rate: 10,
-	type: hotels[1]
-}, {
-	rate: 5,
-	type: hotels[2]
-}, {
-	rate: 10,
-	type: shops[0]
-}, {
-	rate: 10,
-	type: shops[1]
-}, {
-	rate: 5,
-	type: shops[2]
-}, {
-	rate: 5,
-	type: treasures[0]
-}, {
-	rate: 2,
-	type: treasures[1]
-}], [{
-	rate: 50,
-	type: monsters[0]
-}, {
-	rate: 30,
-	type: monsters[1]
-}, {
-	rate: 10,
-	type: monsters[2]
-}, {
-	rate: 10,
-	type: monsters[3]
-}]);
-
+var g;
 var s;
 
-$(function () {
+function loadFloor(fl) {
+	if (fl == 1) {
+		g = maker(15, 20, [{
+			rate: 20,
+			type: hotels[0]
+		}, {
+			rate: 10,
+			type: hotels[1]
+		}, {
+			rate: 5,
+			type: hotels[2]
+		}, {
+			rate: 10,
+			type: shops[0]
+		}, {
+			rate: 10,
+			type: shops[1]
+		}, {
+			rate: 5,
+			type: shops[2]
+		}, {
+			rate: 5,
+			type: treasures[0]
+		}, {
+			rate: 2,
+			type: treasures[1]
+		}], [{
+			rate: 50,
+			type: monsters[0]
+		}, {
+			rate: 30,
+			type: monsters[1]
+		}, {
+			rate: 10,
+			type: monsters[2]
+		}, {
+			rate: 10,
+			type: monsters[3]
+		}]);
+	}
+
 	for (let i in g.nodes) {
 		g.nodes[i].label = '' + g.nodes[i].id;
 		g.nodes[i].x = Math.random();
@@ -222,6 +241,13 @@ $(function () {
 	for (let i in g.edges) {
 		g.edges[i].color = '#ccc';
 		g.edges[i].size = 1;
+		g.edges[i].hover_color = '#aaa';
+	}
+
+	if (s) {
+		s.unbind();
+		s.kill();
+		s = undefined;
 	}
 
 	s = new sigma({
@@ -234,7 +260,8 @@ $(function () {
 			minEdgeSize: 0.5,
 			maxEdgeSize: 4,
 			edgeLabelSize: 'proportional',
-			doubleClickEnabled: false
+			doubleClickEnabled: false,
+			enableEdgeHovering: true
 		}
 	});
 
@@ -244,8 +271,16 @@ $(function () {
 
 	s.bind('doubleClickNode', function (e) {
 		$('#gotoPoint').click();
-	})
+	});
+
+	s.bind('clickEdge', function (e) {
+		showEdge(e.data.edge);
+	});
 
 	var dragListener = sigma.plugins.dragNodes(s, s.renderers[0]);
 	player.atPoint = g.startPoint;
+}
+
+$(function () {
+	loadFloor(1);
 });
