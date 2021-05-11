@@ -80,6 +80,14 @@
             font-size: 3vh;
         }
 
+        .show {
+            display: block;
+        }
+
+        .hidden {
+            display: none;
+        }
+
         #info-container>div>span {
             display: block;
         }
@@ -87,6 +95,8 @@
     <script src="./plugins/sigma.plugins.dragNodes/sigma.plugins.dragNodes.js"></script>
     <script src="./plugins/sigma.renderers.edgeLabels/settings.js"></script>
     <script src="./plugins/sigma.renderers.edgeLabels/sigma.canvas.edges.labels.def.js"></script>
+    <script src="./plugins/sigma.renderers.customEdgeShapes/sigma.canvas.edges.dashed.js"></script>
+    <script src="./plugins/sigma.renderers.customEdgeShapes/sigma.canvas.edgehovers.dashed.js"></script>
     <script src="./libs/data.js"></script>
     <script src="./libs/graph-maker.js"></script>
     <script src="./libs/shortest-path.js"></script>
@@ -117,11 +127,11 @@
                 <span>累计伤害：<span id="path-damage"></span></span>
                 <span><span id="gotoPoint" class="after-use">确认前往</span></span>
             </div>
-            <div id="edge-info" style="display: none;">
-                <span id="monster-info"></span>
-                <span id="monster-hp"></span>
-                <span id="monster-atk"></span>
-                <span id="monster-def"></span>
+            <div id="edge-info">
+                <span>边：<span id="source-target"></span></span>
+                <span>生命：<span id="monster-hp"></span></span>
+                <span>攻击力：<span id="monster-atk"></span></span>
+                <span>防御力：<span id="monster-def"></span></span>
             </div>
         </div>
     </div>
