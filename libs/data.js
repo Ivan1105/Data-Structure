@@ -14,8 +14,8 @@ class Monster {
     }
 
     fight(edge) {
-        if (this.damage >= player.hp) return false;
         if (!edge.alive) return true;
+        if (this.damage >= player.hp) return false;
         edge.alive = false;
         player.hp -= this.damage;
         return true;
