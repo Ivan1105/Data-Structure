@@ -1,7 +1,19 @@
+/** 记录当前点的相邻节点 */
+var adjacent = [];
+/** 生成的原始图 */
+var g;
+/** sigma插件建立的图 */
+var s;
+/** 拖动点的监听事件 */
+var dragListener;
+/** 到达每个点的距离 */
+var pathToOthers;
+
 /**
  * 更新当前节点信息
  */
 function updateCurrentPoint() {
+	pathToOthers = calcShortestPath(g, player.atPoint);
 	$('#cur').html(player.atPoint);
 	let type = s.graph.nodes(player.atPoint).type;
 	let limit = s.graph.nodes(player.atPoint).limit;
@@ -38,9 +50,6 @@ function updateCurrentPoint() {
 	else $('#current-service').addClass('before-use');
 }
 
-/** 记录当前点的相邻节点 */
-var adjacent = {};
-
 /**
  * 刷新图
  */
@@ -51,27 +60,15 @@ function refreshGraph() {
 		else e.color = undefined;
 	});
 
-	let str = '';
-	adjacent = {};
 	s.graph.edges().forEach(function (e) {
 		if (e.alive) e.label = '' + e.monster.damage;
 		else {
 			e.label = '0';
 			e.type = 'dashed';
 		}
-
-		if (e.source == player.atPoint) {
-			adjacent[e.target] = e;
-			str += ' <span class="before-use" onclick="showPoint(' + e.target + ')">' + e.target + '</span>';
-		}
-		else if (e.target == player.atPoint) {
-			adjacent[e.source] = e;
-			str += ' <span class="before-use" onclick="showPoint(' + e.source + ')">' + e.source + '</span>';
-		}
 	});
 
-	showPoint(g.endPoint);
-	$('#neighbors').html(str);
+	showPoint(player.atPoint);
 	s.refresh();
 }
 
@@ -101,18 +98,40 @@ $('#current-service').click(function () {
  */
 $('#gotoPoint').click(function () {
 	if (!$(this).hasClass('before-use')) return;
-	goForward(adjacent[$('#to').html()]);
+	goForward(parseInt($('#to').html()));
 });
+
+/**
+ * 解析一条路径
+ * @param {Number} node 
+ * @returns Array
+ */
+function getSinglePath(node) {
+	let singlePath = [];
+	while (node != -1) {
+		singlePath.unshift(node);
+		node = pathToOthers.pathway[node];
+	}
+	return singlePath;
+}
 
 /**
  * 查看节点信息
  * @param {number} node 
  */
 function showPoint(node) {
+	if (node == player.atPoint) {
+		$('#node-info').attr('class', 'hidden');
+		$('#edge-info').attr('class', 'hidden');
+		return;
+	}
+
 	g.edges = s.graph.edges();
-	let obj = calcShortestPath(g, player.atPoint, node);
-	$('#path-way').html(obj.pathway.join('->'));
-	$('#path-damage').html(obj.value);
+	$('#path-way').html(getSinglePath(node).join('->'));
+	$('#path-damage').html(pathToOthers.distance[node]);
+
+	if (player.hp > pathToOthers.distance[node]) $('#gotoPoint').attr('class', 'before-use');
+	else $('#gotoPoint').attr('class', 'after-use');
 
 	node = s.graph.nodes(node);
 	let type = node.type;
@@ -147,18 +166,6 @@ function showPoint(node) {
 		$('#to-type').html('宝箱');
 		$('#to-service').html(str);
 	}
-
-	if (adjacent[node.id]) {
-		let edge = adjacent[node.id];
-		if (edge.alive) {
-			$('#monster-info').html('怪物');
-			$('#monster-hp').html('生命值：' + edge.monster.hp);
-			$('#monster-atk').html('攻击力：' + edge.monster.atk);
-			$('#monster-def').html('防御力：' + edge.monster.def);
-		}
-		$('#gotoPoint').attr('class', 'before-use');
-	}
-	else $('#gotoPoint').attr('class', 'after-use');
 }
 
 function showEdge(edge) {
@@ -176,19 +183,18 @@ function showEdge(edge) {
 }
 
 /**
- * 经过边edge
+ * 前往一个点
  * @param {Object} edge 
  */
-function goForward(edge) {
-	let monster = edge.monster;
-	if (monster.fight(edge)) {
-		if (player.atPoint == edge.source) player.atPoint = edge.target;
-		else player.atPoint = edge.source;
+function goForward(node) {
+	if (player.hp <= pathToOthers.distance[node]) return;
+	let singlePath = getSinglePath(node);
+	for (i = 0; i < singlePath.length - 1; i++) {
+		let edge = adjacent[singlePath[i]][singlePath[i + 1]];
+		if (edge) edge.monster.fight(edge);
 	}
+	player.atPoint = node;
 }
-
-var g;
-var s;
 
 function loadFloor(fl) {
 	if (fl == 1) {
@@ -231,7 +237,10 @@ function loadFloor(fl) {
 		}]);
 	}
 
+	adjacent = new Array(g.nodes);
 	for (let i in g.nodes) {
+		adjacent[i] = new Array(g.nodes);
+
 		g.nodes[i].label = '' + g.nodes[i].id;
 		g.nodes[i].x = Math.random();
 		g.nodes[i].y = Math.random();
@@ -245,39 +254,44 @@ function loadFloor(fl) {
 	}
 
 	if (s) {
-		s.unbind();
-		s.kill();
-		s = undefined;
+		s.graph.clear();
+		s.graph.read(g);
+	}
+	else {
+		s = new sigma({
+			graph: g,
+			renderer: {
+				container: document.getElementById('graph-container'),
+				type: 'canvas'
+			},
+			settings: {
+				minEdgeSize: 0.5,
+				maxEdgeSize: 4,
+				edgeLabelSize: 'proportional',
+				doubleClickEnabled: false,
+				enableEdgeHovering: true
+			}
+		});
+
+		dragListener = sigma.plugins.dragNodes(s, s.renderers[0]);
+
+		s.bind('clickNode', function (e) {
+			showPoint(e.data.node.id);
+		});
+
+		s.bind('doubleClickNode', function (e) {
+			goForward(e.data.node.id);
+		});
+
+		s.bind('clickEdge', function (e) {
+			showEdge(e.data.edge);
+		});
 	}
 
-	s = new sigma({
-		graph: g,
-		renderer: {
-			container: document.getElementById('graph-container'),
-			type: 'canvas'
-		},
-		settings: {
-			minEdgeSize: 0.5,
-			maxEdgeSize: 4,
-			edgeLabelSize: 'proportional',
-			doubleClickEnabled: false,
-			enableEdgeHovering: true
-		}
+	s.graph.edges().forEach(function (e) {
+		adjacent[e.source][e.target] = adjacent[e.target][e.source] = e;
 	});
 
-	s.bind('clickNode', function (e) {
-		showPoint(e.data.node.id);
-	});
-
-	s.bind('doubleClickNode', function (e) {
-		$('#gotoPoint').click();
-	});
-
-	s.bind('clickEdge', function (e) {
-		showEdge(e.data.edge);
-	});
-
-	var dragListener = sigma.plugins.dragNodes(s, s.renderers[0]);
 	player.atPoint = g.startPoint;
 }
 

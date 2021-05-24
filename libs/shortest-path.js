@@ -114,17 +114,10 @@ function dijkstra(G, s, t) {
 		}
 	}
 
-	let path = [];
-	traceBack(path, pre, t);
-	return { pathway: path, value: dis[t] };
+	return { pathway: pre, distance: dis };
 }
 
-function traceBack(path, pre, t) {
-	if (pre[t] != -1) traceBack(path, pre, pre[t]);
-	path.push(t);
-}
-
-function calcShortestPath(obj, s, t) {
+function calcShortestPath(obj, s) {
 	let G = new Graph(obj.nodes.length, obj.edges.length);
 	for (let i in obj.edges) {
 		if (obj.edges[i].alive) {
@@ -136,5 +129,5 @@ function calcShortestPath(obj, s, t) {
 			G.addEdge(obj.edges[i].target, obj.edges[i].source, 0);
 		}
 	}
-	return dijkstra(G, s, t);
+	return dijkstra(G, s);
 }

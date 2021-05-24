@@ -71,26 +71,26 @@ class Treasure {
     }
 }
 
-var monsters = [
+const monsters = [
     new Monster(25, 12, 0),
     new Monster(28, 15, 0),
     new Monster(50, 10, 5),
     new Monster(15, 20, 0)
 ];
 
-var hotels = [
+const hotels = [
     new Hotel(10, 20),
     new Hotel(20, 50),
     new Hotel(15, 15, 15, 1)
 ];
 
-var shops = [
+const shops = [
     new Shop(10, 1),
     new Shop(10, 0, 1),
     new Shop(15, 1, 1)
 ];
 
-var treasures = [
+const treasures = [
     new Treasure(25),
     new Treasure(40)
 ];
@@ -101,7 +101,7 @@ var player = {
     money: 100,
     atk: 12,
     def: 8,
-    _atPoint: 0,
+    _atPoint: -1,
     get atPoint() {
         return this._atPoint;
     },
