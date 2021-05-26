@@ -85,23 +85,6 @@ function resetGraph() {
 }
 
 /**
- * 点击使用当前点的设施
- */
-$('#current-service').click(function () {
-	if (!$(this).hasClass('before-use')) return;
-	let node = s.graph.nodes(player.atPoint);
-	node.type.use(node);
-});
-
-/**
- * 前往下一个点
- */
-$('#gotoPoint').click(function () {
-	if (!$(this).hasClass('before-use')) return;
-	goForward(parseInt($('#to').html()));
-});
-
-/**
  * 解析一条路径
  * @param {Number} node 
  * @returns Array
@@ -180,6 +163,7 @@ function showEdge(edge) {
 	$('#monster-hp').html(edge.monster.hp);
 	$('#monster-atk').html(edge.monster.atk);
 	$('#monster-def').html(edge.monster.def);
+	$('#monster-damage').html(edge.monster.damage);
 }
 
 /**
@@ -198,7 +182,7 @@ function goForward(node) {
 
 function loadFloor(fl) {
 	if (fl == 1) {
-		g = maker(15, 20, [{
+		g = maker(8, 20, [{
 			rate: 20,
 			type: hotels[0]
 		}, {
@@ -275,11 +259,11 @@ function loadFloor(fl) {
 
 		dragListener = sigma.plugins.dragNodes(s, s.renderers[0]);
 
-		s.bind('clickNode', function (e) {
+		s.bind('overNode', function (e) {
 			showPoint(e.data.node.id);
 		});
 
-		s.bind('doubleClickNode', function (e) {
+		s.bind('rightClickNode', function (e) {
 			goForward(e.data.node.id);
 		});
 
@@ -296,5 +280,26 @@ function loadFloor(fl) {
 }
 
 $(function () {
+	/**
+	 * 点击使用当前点的设施
+	 */
+	$('#current-service').click(function () {
+		if (!$(this).hasClass('before-use')) return;
+		let node = s.graph.nodes(player.atPoint);
+		node.type.use(node);
+	});
+
+	/**
+	 * 前往下一个点
+	 */
+	$('#gotoPoint').click(function () {
+		if (!$(this).hasClass('before-use')) return;
+		goForward(parseInt($('#to').html()));
+	});
+
+	$(document).contextmenu(function (e) {
+		return false;
+	});
+
 	loadFloor(1);
 });

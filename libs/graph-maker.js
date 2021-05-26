@@ -42,7 +42,8 @@ function maker(n, m, nodeRate, edgeRate) {
 	for (let i = 0; i < n; i++) {
 		dis[i] = new Array(n);
 		for (let j = 0; j < n; j++) {
-			dis[i][j] = Infinity;
+			if (i == j) dis[i][j] = 0;
+			else dis[i][j] = Infinity;
 		}
 	}
 
@@ -73,13 +74,14 @@ function maker(n, m, nodeRate, edgeRate) {
 			}
 		}
 	}
+	console.log(dis);
 	G.startPoint = s;
 	G.endPoint = t;
 
 	G.nodes[s].type = hotels[0];
 	G.nodes[s].limit = G.nodes[s].type.limit;
 	G.nodes[t].type = shops[2];
-	G.nodes[t].limit = G.nodes[t].limit;
+	G.nodes[t].limit = G.nodes[t].type.limit;
 
 	let pt = 0;
 
