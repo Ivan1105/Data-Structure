@@ -1,3 +1,22 @@
+function shuffleSelf(array, size) {
+	var index = -1,
+		length = array.length,
+		lastIndex = length - 1;
+
+	size = size === undefined ? length : size;
+	while (++index < size) {
+		// var rand = baseRandom(index, lastIndex),
+		var rand = index + Math.floor(Math.random() * (lastIndex - index + 1))
+		value = array[rand];
+
+		array[rand] = array[index];
+
+		array[index] = value;
+	}
+	array.length = size;
+	return array;
+}
+
 function floyd(nodes, dis) {
 	for (let k = 0; k < nodes; k++) {
 		for (let i = 0; i < nodes; i++) {
@@ -55,12 +74,18 @@ function maker(n, m, nodeRate, edgeRate) {
 		G.nodes.push(obj);
 
 		let tmp = m / n | 0;
+		let road = [];
 		if (i < m % n) tmp++;
-		while (tmp) {
-			let v = Math.random() * n | 0;
-			if (i == v || dis[i][v] != Infinity) continue;
-			dis[i][v] = dis[v][i] = 1;
-			tmp--;
+
+		for (let j = 0; j < n; j++) {
+			if (i != j && dis[i][j] == Infinity) {
+				road.push(j);
+			}
+		}
+		shuffleSelf(road);
+
+		while (tmp--) {
+			if (road[tmp]) dis[i][road[tmp]] = dis[road[tmp]][i] = 1;
 		}
 	}
 
@@ -74,7 +99,6 @@ function maker(n, m, nodeRate, edgeRate) {
 			}
 		}
 	}
-	console.log(dis);
 	G.startPoint = s;
 	G.endPoint = t;
 

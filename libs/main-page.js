@@ -21,30 +21,8 @@ function updateCurrentPoint() {
 	$('#current-type').html('');
 	$('#current-service').html('').removeClass();
 
-	if (type instanceof Shop) {
-		let str = '';
-		if (type.atk) str += type.atk + '攻击力 ';
-		if (type.def) str += type.def + '防御力 ';
-		str += '- $' + type.cost;
-
-		$('#current-type').html('商店');
-		$('#current-service').html(str);
-	}
-	else if (type instanceof Hotel) {
-		let str = '';
-		if (type.maxhp) str += '增加' + type.maxhp + '生命上限 ';
-		else str += '回复' + type.hp + '生命 ';
-		str += '- $' + type.cost;
-
-		$('#current-type').html('旅店');
-		$('#current-service').html(str);
-	}
-	else if (type instanceof Treasure) {
-		let str = '金币 + $' + type.money;
-
-		$('#current-type').html('宝箱');
-		$('#current-service').html(str);
-	}
+	$('#current-type').html(type.name);
+	$('#current-service').html(type.detail);
 
 	if (limit <= 0) $('#current-service').addClass('after-use');
 	else $('#current-service').addClass('before-use');
@@ -125,30 +103,8 @@ function showPoint(node) {
 	$('#to-type').html('');
 	$('#to-service').html('');
 
-	if (type instanceof Shop) {
-		let str = '';
-		if (type.atk) str += type.atk + '攻击力 ';
-		if (type.def) str += type.def + '防御力 ';
-		str += '- $' + type.cost;
-
-		$('#to-type').html('商店');
-		$('#to-service').html(str);
-	}
-	else if (type instanceof Hotel) {
-		let str = '';
-		if (type.maxhp) str += '增加' + type.maxhp + '生命上限 ';
-		else str += '回复' + type.hp + '生命 ';
-		str += '- $' + type.cost;
-
-		$('#to-type').html('旅店');
-		$('#to-service').html(str);
-	}
-	else if (type instanceof Treasure) {
-		let str = '金币 + $' + type.money;
-
-		$('#to-type').html('宝箱');
-		$('#to-service').html(str);
-	}
+	$('#to-type').html(type.name);
+	$('#to-service').html(type.detail);
 }
 
 function showEdge(edge) {
@@ -267,8 +223,18 @@ function loadFloor(fl) {
 			goForward(e.data.node.id);
 		});
 
-		s.bind('clickEdge', function (e) {
+		s.bind('overEdge', function (e) {
 			showEdge(e.data.edge);
+		});
+
+		s.bind('rightClickStage', function () {
+			$('#all-nodes-details').empty();
+			for (let i in adjacent) {
+				let type = s.graph.nodes(i).type;
+				if (!type) type = { name: '无', detail: '无' };
+				$('#all-nodes-details').append('<tr><td>' + i + '</td><td>' + type.name + '</td><td>' + type.detail + '</td><td>' + pathToOthers.distance[i] + '</td><td>' + getSinglePath(i).join('->') + '</td></tr>')
+			}
+			$("#all-nodes").modal('toggle');
 		});
 	}
 

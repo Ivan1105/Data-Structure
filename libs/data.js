@@ -28,15 +28,24 @@ class Hotel {
         this.hp = hp;
         this.maxhp = maxhp;
         this.limit = limit;
+        this.name = '旅店';
     }
     use(node) {
-        if (player.money < this.cost) return;
+        if (player.money < this.cost || player.hp == player.maxhp) return;
         if (node.limit <= 0) return;
         player.money -= this.cost;
         player.hp += this.hp;
         player.maxhp += this.maxhp;
         node.limit--;
         player.update();
+    }
+
+    get detail() {
+        let str = '';
+        if (this.maxhp) str += '增加' + this.maxhp + '生命上限 ';
+        else str += '回复' + this.hp + '生命 ';
+        str += '- $' + this.cost;
+        return str;
     }
 }
 
@@ -46,6 +55,7 @@ class Shop {
         this.atk = atk;
         this.def = def;
         this.limit = limit;
+        this.name = '商店';
     }
     use(node) {
         if (player.money < this.cost) return;
@@ -56,18 +66,32 @@ class Shop {
         node.limit--;
         player.update();
     }
+
+    get detail() {
+        let str = '';
+        if (this.atk) str += this.atk + '攻击力 ';
+        if (this.def) str += this.def + '防御力 ';
+        str += '- $' + this.cost;
+        return str;
+    }
 }
 
 class Treasure {
     constructor(money, limit = 1) {
         this.money = money;
         this.limit = limit;
+        this.name = '宝箱';
     }
     use(node) {
         if (node.limit <= 0) return;
         player.money += this.money;
         node.limit--;
         player.update();
+    }
+
+    get detail() {
+        let str = '金币 + $' + this.money;
+        return str;
     }
 }
 
