@@ -7,9 +7,22 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>数据结构</title>
 	<link rel="stylesheet" href="./src/css/bootstrap.min.css">
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 	<script src="./libs/jquery.js"></script>
 	<script src="./libs/bootstrap.min.js"></script>
 	<script src="./libs/sigma.min.js"></script>
+	<script src="./plugins/sigma.plugins.dragNodes/sigma.plugins.dragNodes.js"></script>
+	<script src="./plugins/sigma.renderers.edgeLabels/settings.js"></script>
+	<script src="./plugins/sigma.renderers.edgeLabels/sigma.canvas.edges.labels.def.js"></script>
+	<script src="./plugins/sigma.renderers.customEdgeShapes/sigma.canvas.edges.dashed.js"></script>
+	<script src="./plugins/sigma.renderers.customEdgeShapes/sigma.canvas.edgehovers.dashed.js"></script>
+	<script src="./libs/property/player.js"></script>
+	<script src="./libs/property/hotels.js"></script>
+	<script src="./libs/property/monsters.js"></script>
+	<script src="./libs/property/shops.js"></script>
+	<script src="./libs/property/treasures.js"></script>
+	<script src="./libs/graph-maker.js"></script>
+	<script src="./libs/shortest-path.js"></script>
 	<style>
 		html {
 			user-select: none;
@@ -93,18 +106,27 @@
 		#info-container>div>span {
 			display: block;
 		}
+
+		#loading {
+			position: fixed;
+			width: 100%;
+			height: 100%;
+			background-color: white;
+			z-index: 999;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		#all-nodes-details {
+			cursor: pointer;
+		}
 	</style>
-	<script src="./plugins/sigma.plugins.dragNodes/sigma.plugins.dragNodes.js"></script>
-	<script src="./plugins/sigma.renderers.edgeLabels/settings.js"></script>
-	<script src="./plugins/sigma.renderers.edgeLabels/sigma.canvas.edges.labels.def.js"></script>
-	<script src="./plugins/sigma.renderers.customEdgeShapes/sigma.canvas.edges.dashed.js"></script>
-	<script src="./plugins/sigma.renderers.customEdgeShapes/sigma.canvas.edgehovers.dashed.js"></script>
-	<script src="./libs/data.js"></script>
-	<script src="./libs/graph-maker.js"></script>
-	<script src="./libs/shortest-path.js"></script>
 </head>
 
 <body>
+	<div id="loading">加载中</div>
+
 	<div id="container">
 		<div id="player-container">
 			<span>生命: <span id="hp">9999</span></span>
@@ -125,7 +147,6 @@
 				<span id="to-service"></span>
 				<span>路线：<span id="path-way"></span></span>
 				<span>累计伤害：<span id="path-damage"></span></span>
-				<span><span id="gotoPoint" class="after-use">确认前往</span></span>
 			</div>
 			<div id="edge-info">
 				<span>边<span id="source-target"></span>上的怪物</span>
@@ -147,7 +168,7 @@
 				</div>
 
 				<div class="modal-body">
-					<table class="table table-striped table-bordered">
+					<table class="table table-striped table-bordered table-hover">
 						<thead>
 							<tr>
 								<th>节点编号</th>

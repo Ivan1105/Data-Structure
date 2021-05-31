@@ -13,9 +13,10 @@ var pathToOthers;
  * 更新当前节点信息
  */
 function updateCurrentPoint() {
+	g.edges = s.graph.edges();
 	pathToOthers = calcShortestPath(g, player.atPoint);
 	$('#cur').html(player.atPoint);
-	let type = s.graph.nodes(player.atPoint).type;
+	let type = s.graph.nodes(player.atPoint).type || { name: '', detail: '' };
 	let limit = s.graph.nodes(player.atPoint).limit;
 
 	$('#current-type').html('');
@@ -41,7 +42,7 @@ function refreshGraph() {
 	s.graph.edges().forEach(function (e) {
 		if (e.alive) e.label = '' + e.monster.damage;
 		else {
-			e.label = '0';
+			e.label = '';
 			e.type = 'dashed';
 		}
 	});
@@ -87,15 +88,11 @@ function showPoint(node) {
 		return;
 	}
 
-	g.edges = s.graph.edges();
 	$('#path-way').html(getSinglePath(node).join('->'));
 	$('#path-damage').html(pathToOthers.distance[node]);
 
-	if (player.hp > pathToOthers.distance[node]) $('#gotoPoint').attr('class', 'before-use');
-	else $('#gotoPoint').attr('class', 'after-use');
-
 	node = s.graph.nodes(node);
-	let type = node.type;
+	let type = node.type || { name: '', detail: '' };
 	$('#to').html(node.id);
 
 	$('#node-info').attr('class', 'show');
@@ -127,12 +124,14 @@ function showEdge(edge) {
  * @param {Object} edge 
  */
 function goForward(node) {
-	if (player.hp <= pathToOthers.distance[node]) return;
+	if (player.atPoint == node || player.hp <= pathToOthers.distance[node]) return;
 	let singlePath = getSinglePath(node);
 	for (i = 0; i < singlePath.length - 1; i++) {
 		let edge = adjacent[singlePath[i]][singlePath[i + 1]];
 		if (edge) edge.monster.fight(edge);
 	}
+
+	$("#all-nodes").modal('hide');
 	player.atPoint = node;
 }
 
@@ -229,11 +228,15 @@ function loadFloor(fl) {
 
 		s.bind('rightClickStage', function () {
 			$('#all-nodes-details').empty();
-			for (let i in adjacent) {
-				let type = s.graph.nodes(i).type;
+			s.graph.nodes().forEach(function (e) {
+				let type = e.type;
 				if (!type) type = { name: '无', detail: '无' };
-				$('#all-nodes-details').append('<tr><td>' + i + '</td><td>' + type.name + '</td><td>' + type.detail + '</td><td>' + pathToOthers.distance[i] + '</td><td>' + getSinglePath(i).join('->') + '</td></tr>')
-			}
+
+				let tr = document.createElement('tr');
+				tr.onclick = 'goForward(' + e.id + ')';
+				tr.innerHTML = '<td>' + e.id + '</td><td>' + type.name + '</td><td>' + type.detail + '</td><td>' + pathToOthers.distance[e.id] + '</td><td>' + getSinglePath(e.id).join('->') + '</td>';
+				$('#all-nodes-details').append(tr);
+			});
 			$("#all-nodes").modal('toggle');
 		});
 	}
@@ -255,17 +258,12 @@ $(function () {
 		node.type.use(node);
 	});
 
-	/**
-	 * 前往下一个点
-	 */
-	$('#gotoPoint').click(function () {
-		if (!$(this).hasClass('before-use')) return;
-		goForward(parseInt($('#to').html()));
-	});
-
 	$(document).contextmenu(function (e) {
 		return false;
 	});
 
 	loadFloor(1);
+	$("#loading").fadeOut(function () {
+		$(this).remove();
+	});
 });
