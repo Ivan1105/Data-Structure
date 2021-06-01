@@ -10,7 +10,6 @@ var player = {
     },
     set atPoint(val) {
         this._atPoint = val;
-        if (val == g.endPoint) alert('感谢您游玩本次测试！');
         this.update();
     },
     update: function () {

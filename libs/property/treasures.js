@@ -19,5 +19,7 @@ class Treasure {
 
 const treasures = [
     new Treasure(25),
-    new Treasure(40)
+    new Treasure(40),
+    new Treasure(70),
+    new Treasure(100)
 ];
