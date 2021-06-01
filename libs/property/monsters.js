@@ -26,5 +26,8 @@ const monsters = [
     new Monster(25, 12, 0),
     new Monster(28, 15, 0),
     new Monster(50, 10, 5),
-    new Monster(15, 20, 0)
+    new Monster(15, 20, 0),
+    new Monster(30, 18, 4),
+    new Monster(22, 25, 2),
+    new Monster(70, 11, 10)
 ];

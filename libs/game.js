@@ -8,6 +8,8 @@ var s;
 var dragListener;
 /** 到达每个点的距离 */
 var pathToOthers;
+/** 当前所在关卡 */
+var curLevel = 0;
 
 /**
  * 更新当前节点信息
@@ -135,46 +137,9 @@ function goForward(node) {
 	player.atPoint = node;
 }
 
-function loadFloor(fl) {
-	if (fl == 1) {
-		g = maker(8, 20, [{
-			rate: 20,
-			type: hotels[0]
-		}, {
-			rate: 10,
-			type: hotels[1]
-		}, {
-			rate: 5,
-			type: hotels[2]
-		}, {
-			rate: 10,
-			type: shops[0]
-		}, {
-			rate: 10,
-			type: shops[1]
-		}, {
-			rate: 5,
-			type: shops[2]
-		}, {
-			rate: 5,
-			type: treasures[0]
-		}, {
-			rate: 2,
-			type: treasures[1]
-		}], [{
-			rate: 50,
-			type: monsters[0]
-		}, {
-			rate: 30,
-			type: monsters[1]
-		}, {
-			rate: 10,
-			type: monsters[2]
-		}, {
-			rate: 10,
-			type: monsters[3]
-		}]);
-	}
+function loadLevel(fl) {
+	$("#level").html(fl + 1);
+	g = maker(levels[fl].nodes, levels[fl].edges, levels[fl].nodeRates, levels[fl].edgeRates);
 
 	adjacent = new Array(g.nodes);
 	for (let i in g.nodes) {
@@ -232,10 +197,8 @@ function loadFloor(fl) {
 				let type = e.type;
 				if (!type) type = { name: '无', detail: '无' };
 
-				let tr = document.createElement('tr');
-				tr.onclick = 'goForward(' + e.id + ')';
-				tr.innerHTML = '<td>' + e.id + '</td><td>' + type.name + '</td><td>' + type.detail + '</td><td>' + pathToOthers.distance[e.id] + '</td><td>' + getSinglePath(e.id).join('->') + '</td>';
-				$('#all-nodes-details').append(tr);
+				if (e.id != player.atPoint && pathToOthers.distance[e.id] < player.hp) $('#all-nodes-details').append('<tr onclick="goForward(' + e.id + ')" class="before-use"><td>' + e.id + '</td><td>' + type.name + '</td><td>' + type.detail + '</td><td>' + pathToOthers.distance[e.id] + '</td><td>' + getSinglePath(e.id).join('->') + '</td></tr>');
+				else $('#all-nodes-details').append('<tr onclick="goForward(' + e.id + ')" class="after-use"><td>' + e.id + '</td><td>' + type.name + '</td><td>' + type.detail + '</td><td>' + pathToOthers.distance[e.id] + '</td><td>' + getSinglePath(e.id).join('->') + '</td></tr>');
 			});
 			$("#all-nodes").modal('toggle');
 		});
@@ -262,7 +225,7 @@ $(function () {
 		return false;
 	});
 
-	loadFloor(1);
+	loadLevel(curLevel);
 	$("#loading").fadeOut(function () {
 		$(this).remove();
 	});

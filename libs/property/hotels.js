@@ -28,5 +28,7 @@ class Hotel {
 const hotels = [
     new Hotel(10, 20),
     new Hotel(20, 50),
-    new Hotel(15, 15, 15, 1)
+    new Hotel(15, 15, 15, 1),
+    new Hotel(25, 70),
+    new Hotel(25, 20, 20, 1)
 ];

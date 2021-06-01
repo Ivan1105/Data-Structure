@@ -28,5 +28,8 @@ class Shop {
 const shops = [
     new Shop(10, 1),
     new Shop(10, 0, 1),
-    new Shop(15, 1, 1)
+    new Shop(15, 1, 1),
+    new Shop(15, 2),
+    new Shop(15, 0, 2),
+    new Shop(30, 2, 2)
 ];
