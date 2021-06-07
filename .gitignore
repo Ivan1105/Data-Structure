@@ -1,3 +1,5 @@
 cpp/
 *.ico
 .vscode/
+node_modules/
+img/
