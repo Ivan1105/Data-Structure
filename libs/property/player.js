@@ -10,6 +10,10 @@ var player = {
     },
     set atPoint(val) {
         this._atPoint = val;
+        if (val == g.endPoint)
+            $('#next-level').removeClass('hidden');
+        else
+            $('#next-level').addClass('hidden');
         this.update();
     },
     update: function () {

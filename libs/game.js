@@ -139,7 +139,7 @@ function goForward(node) {
 
 function loadLevel(fl) {
 	$("#level").html(fl + 1);
-	g = maker(levels[fl].nodes, levels[fl].edges, levels[fl].nodeRates, levels[fl].edgeRates);
+	g = maker(levels[fl]);
 
 	adjacent = new Array(g.nodes);
 	for (let i in g.nodes) {
@@ -219,6 +219,12 @@ $(function () {
 		if (!$(this).hasClass('before-use')) return;
 		let node = s.graph.nodes(player.atPoint);
 		node.type.use(node);
+	});
+
+	$("#next-level").on('click', function () {
+		if (player.atPoint == g.endPoint) {
+			loadLevel(++curLevel);
+		}
 	});
 
 	$(document).contextmenu(function (e) {

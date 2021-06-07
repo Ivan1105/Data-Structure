@@ -6,10 +6,11 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>数据结构</title>
-	<link rel="stylesheet" href="../src/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
 	<link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
-	<script src="../libs/jquery.js"></script>
-	<script src="../libs/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="../src/css/iconfont.css">
+	<script src="../node_modules/jquery/dist/jquery.min.js"></script>
+	<script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="../libs/sigma/sigma.min.js"></script>
 	<script src="../libs/sigma/plugins/sigma.plugins.dragNodes/sigma.plugins.dragNodes.js"></script>
 	<script src="../libs/sigma/plugins/sigma.renderers.edgeLabels/settings.js"></script>
@@ -138,17 +139,18 @@
 
 	<div id="container">
 		<div id="player-container">
-			<span>当前所在：第<span id="level">9999</span>层</span>
-			<span>生命: <span id="hp">9999</span></span>
-			<span>金币: <span id="money">9999</span></span>
-			<span>攻击力：<span id="atk">9999</span></span>
-			<span>防御力：<span id="def">9999</span></span>
+			<span class="iconfont icon-floor"><span id="level">9999</span></span>
+			<span class="iconfont icon-hp"><span id="hp">9999</span></span>
+			<span class="iconfont icon-coin"><span id="money">9999</span></span>
+			<span class="iconfont icon-atk"><span id="atk">9999</span></span>
+			<span class="iconfont icon-def"><span id="def">9999</span></span>
 		</div>
 		<div id="graph-container"></div>
 		<div id="status-container">
 			<span>当前所在点: <span id="cur">9999</span></span>
 			<span id="current-type"></span>
 			<span><span id="current-service"></span></span>
+			<span><span id="next-level" class="hidden before-use">前往下一层</span></span>
 		</div>
 		<div id="info-container">
 			<div id="node-info">
@@ -174,7 +176,7 @@
 
 				<div class="modal-header">
 					<h4 class="modal-title">节点信息</h4>
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 
 				<div class="modal-body">
@@ -193,7 +195,7 @@
 				</div>
 
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
 				</div>
 
 			</div>
