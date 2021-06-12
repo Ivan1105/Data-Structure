@@ -42,11 +42,7 @@ function refreshGraph() {
 	});
 
 	s.graph.edges().forEach(function (e) {
-		if (e.alive) e.label = '' + e.monster.damage;
-		else {
-			e.label = '';
-			e.type = 'dashed';
-		}
+		if (!e.alive) e.type = 'dashed';
 	});
 
 	showPoint(player.atPoint);
@@ -140,15 +136,18 @@ function goForward(node) {
 function loadLevel(fl) {
 	$("#level").html(fl + 1);
 	g = maker(levels[fl]);
+	console.log(g)
 
-	adjacent = new Array(g.nodes);
-	for (let i in g.nodes) {
-		adjacent[i] = new Array(g.nodes);
+	adjacent = new Array(g.nodes.length);
+	for (let i = 0; i < g.nodes.length; i++) {
+		adjacent[i] = new Array(g.nodes.length);
 
 		g.nodes[i].label = '' + g.nodes[i].id;
 		g.nodes[i].x = Math.random();
 		g.nodes[i].y = Math.random();
 		g.nodes[i].size = 1;
+		g.nodes[i].circular_x = 10 * Math.cos(Math.PI * 2 * i / g.nodes.length - Math.PI / 2);
+		g.nodes[i].circular_y = 10 * Math.sin(Math.PI * 2 * i / g.nodes.length - Math.PI / 2);
 	}
 
 	for (let i in g.edges) {
@@ -171,9 +170,9 @@ function loadLevel(fl) {
 			settings: {
 				minEdgeSize: 0.5,
 				maxEdgeSize: 4,
-				edgeLabelSize: 'proportional',
 				doubleClickEnabled: false,
-				enableEdgeHovering: true
+				enableEdgeHovering: true,
+				animationsTime: 2000
 			}
 		});
 
@@ -209,6 +208,15 @@ function loadLevel(fl) {
 	});
 
 	player.atPoint = g.startPoint;
+	setTimeout(() => {
+		sigma.plugins.animate(
+			s,
+			{
+				x: 'circular_x',
+				y: 'circular_y'
+			}
+		);
+	}, 1000);
 }
 
 $(function () {
