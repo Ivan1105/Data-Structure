@@ -7,7 +7,8 @@ class Hotel {
         this.name = '旅店';
     }
     use(node) {
-        if (player.money < this.cost || player.hp == player.maxhp) return;
+        if (player.money < this.cost) return;
+        if (player.hp === player.maxhp && this.maxhp === 0) return;
         if (node.limit <= 0) return;
         player.money -= this.cost;
         player.hp += this.hp;
@@ -30,5 +31,7 @@ const hotels = [
     new Hotel(20, 50),
     new Hotel(15, 15, 15, 1),
     new Hotel(25, 70),
-    new Hotel(25, 20, 20, 1)
+    new Hotel(25, 20, 20, 1),
+    new Hotel(50, 150),
+    new Hotel(60, 50, 50, 1)
 ];

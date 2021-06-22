@@ -12,6 +12,7 @@
     <style>
         html,
         body {
+            background-color: #ddd;
             user-select: none;
             margin: 0;
             padding: 0;
@@ -33,12 +34,11 @@
             height: 100%;
             display: flex;
             justify-content: center;
-            background-image: url(./src/img/cover.jpg);
         }
 
         #options {
             position: absolute;
-            bottom: 12%;
+            bottom: 22%;
             font-size: 1.4vw;
             text-align: center;
         }
@@ -47,42 +47,23 @@
             padding: 0 3em;
             display: block;
             transition: all 1s;
-            color: rgb(207, 207, 207);
             cursor: pointer;
         }
 
         #options>span:hover {
             background-color: cadetblue;
         }
-
-        #egg {
-            color: rgba(0, 0, 0, 0);
-            font-size: 2cm;
-        }
     </style>
 </head>
 
 <body>
     <div id="container">
-        <h1 style="color: white;"><span class="egg">Deep</span>-<span class="egg">Dark</span>-<span
-                class="egg">Fantasy</span> Dungeon<span id="egg">♂</span></h1>
+        <h1>Thank You For Playing!</h1>
         <div id="options">
-            <span onclick="window.location='./pages/start.html'">开始游戏</span>
-            <span onclick="window.location='./pages/manual.html'">游戏介绍</span>
-            <span onclick="window.location='./pages/staff.html'">制作人员名单</span>
-            <span onclick="window.close()">退出游戏</span>
+            <span onclick="window.location='./start.html'">Play Again</span>
+            <span onclick="window.location='../index.html'">Back to Home</span>
         </div>
     </div>
-    <script>
-        var clicks = [1, 1, 4];
-        $('.egg').on('click', function () {
-            let index = $(this).index();
-            clicks[index]--;
-            if (clicks[0] == 0 && clicks[1] == 0 && clicks[2] == 0) {
-                $('#egg').css('color', 'black');
-            }
-        });
-    </script>
 </body>
 
 </html>

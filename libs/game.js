@@ -134,9 +134,38 @@ function goForward(node) {
 }
 
 function loadLevel(fl) {
+	if ($("#loading").length === 0) {
+		$('body').prepend('<div id="loading">地形加载中...</div>');
+	}
+
 	$("#level").html(fl + 1);
-	g = maker(levels[fl]);
-	console.log(g)
+	if (fl == 4) {
+		g = {
+			startPoint: 0,
+			endPoint: 1,
+			nodes: [
+				{
+					id: 0
+				},
+				{
+					id: 1
+				}
+			],
+			edges: [
+				{
+					id: 0,
+					source: 0,
+					target: 1,
+					monster: monsters[12],
+					alive: true
+				}
+			]
+		}
+	}
+	else if (fl == 5)
+		window.location = './thankU.html';
+	else
+		g = maker(levels[fl]);
 
 	adjacent = new Array(g.nodes.length);
 	for (let i = 0; i < g.nodes.length; i++) {
@@ -196,8 +225,10 @@ function loadLevel(fl) {
 				let type = e.type;
 				if (!type) type = { name: '无', detail: '无' };
 
-				if (e.id != player.atPoint && pathToOthers.distance[e.id] < player.hp) $('#all-nodes-details').append('<tr onclick="goForward(' + e.id + ')" class="before-use"><td>' + e.id + '</td><td>' + type.name + '</td><td>' + type.detail + '</td><td>' + pathToOthers.distance[e.id] + '</td><td>' + getSinglePath(e.id).join('->') + '</td></tr>');
-				else $('#all-nodes-details').append('<tr onclick="goForward(' + e.id + ')" class="after-use"><td>' + e.id + '</td><td>' + type.name + '</td><td>' + type.detail + '</td><td>' + pathToOthers.distance[e.id] + '</td><td>' + getSinglePath(e.id).join('->') + '</td></tr>');
+				let used = '';
+				if (e.limit === 0) used = '已使用';
+				if (e.id != player.atPoint && pathToOthers.distance[e.id] < player.hp) $('#all-nodes-details').append('<tr onclick="goForward(' + e.id + ')" class="before-use"><td>' + e.id + '</td><td>' + type.name + '</td><td>' + type.detail + '</td><td>' + used + '</td><td>' + pathToOthers.distance[e.id] + '</td><td>' + getSinglePath(e.id).join('->') + '</td></tr>');
+				else $('#all-nodes-details').append('<tr onclick="goForward(' + e.id + ')" class="after-use"><td>' + e.id + '</td><td>' + type.name + '</td><td>' + type.detail + '</td><td>' + used + '</td><td>' + pathToOthers.distance[e.id] + '</td><td>' + getSinglePath(e.id).join('->') + '</td></tr>');
 			});
 			$("#all-nodes").modal('toggle');
 		});
@@ -209,13 +240,16 @@ function loadLevel(fl) {
 
 	player.atPoint = g.startPoint;
 	setTimeout(() => {
-		sigma.plugins.animate(
-			s,
-			{
-				x: 'circular_x',
-				y: 'circular_y'
-			}
-		);
+		$("#loading").fadeOut(function () {
+			$(this).remove();
+			sigma.plugins.animate(
+				s,
+				{
+					x: 'circular_x',
+					y: 'circular_y'
+				}
+			);
+		});
 	}, 1000);
 }
 
@@ -240,7 +274,4 @@ $(function () {
 	});
 
 	loadLevel(curLevel);
-	$("#loading").fadeOut(function () {
-		$(this).remove();
-	});
 });

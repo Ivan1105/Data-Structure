@@ -9,6 +9,7 @@
 	<link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
 	<link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
 	<link rel="stylesheet" href="../src/css/iconfont.css">
+	<link rel="stylesheet" href="../node_modules/bootstrap-icons/font/bootstrap-icons.css">
 	<script src="../node_modules/jquery/dist/jquery.min.js"></script>
 	<script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="../libs/sigma/sigma.min.js"></script>
@@ -134,10 +135,13 @@
 </head>
 
 <body>
-	<div id="loading">loading</div>
+	<div id="loading">地形加载中...</div>
 
 	<div id="container">
 		<div id="player-container">
+			<span class="bi-box-arrow-in-left" style="cursor: pointer;"
+				onclick="window.location='../index.html'"></span>
+			<span class="bi-arrow-clockwise" style="cursor: pointer;" onclick="window.location.reload()"></span>
 			<span class="iconfont icon-floor"><span id="level">9999</span></span>
 			<span class="iconfont icon-hp"><span id="hp">9999</span></span>
 			<span class="iconfont icon-coin"><span id="money">9999</span></span>
@@ -160,10 +164,12 @@
 				<span>累计伤害：<span id="path-damage"></span></span>
 			</div>
 			<div id="edge-info">
-				<span>边<span id="source-target"></span>上的怪物</span>
-				<span>生命：<span id="monster-hp"></span></span>
-				<span>攻击力：<span id="monster-atk"></span></span>
-				<span>防御力：<span id="monster-def"></span></span>
+				<span><span id="source-target"></span></span>
+				<span>
+					<span class="iconfont icon-hp"><span id="monster-hp"></span></span>
+					<span class="iconfont icon-atk"><span id="monster-atk"></span></span>
+					<span class="iconfont icon-def"><span id="monster-def"></span></span>
+				</span>
 				<span>造成伤害：<span id="monster-damage"></span></span>
 			</div>
 		</div>
@@ -185,6 +191,7 @@
 								<th>节点编号</th>
 								<th>设施</th>
 								<th>详细</th>
+								<th>状态</th>
 								<th>最短距离</th>
 								<th>路线</th>
 							</tr>
@@ -200,6 +207,22 @@
 			</div>
 		</div>
 	</div>
+
+	<script>
+		const egg = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a', 'b', 'a'];
+		var keys = [];
+		$(document).on('keydown', function (e) {
+			keys.push(e.key);
+			if (keys.length > egg.length) keys.shift();
+			for (let i = 0; i < egg.length; i++) {
+				if (keys[i] != egg[i]) return;
+			}
+			player.hp = player.maxhp = 999;
+			player.money = 9999;
+			player.atk = 50;
+			player.update();
+		});
+	</script>
 </body>
 
 </html>
