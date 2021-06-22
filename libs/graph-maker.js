@@ -1,3 +1,9 @@
+/**
+ * 随机打乱数组
+ * @param {Array} array - 原始数组
+ * @param {Number} size - 数组大小
+ * @returns 打乱后的数组
+ */
 function shuffleSelf(array, size) {
 	var index = -1,
 		length = array.length,
@@ -17,6 +23,11 @@ function shuffleSelf(array, size) {
 	return array;
 }
 
+/**
+ * 计算两点之间最少经过的边数量
+ * @param {Number} nodes - 节点数量
+ * @param {*} dis - 邻接矩阵
+ */
 function floyd(nodes, dis) {
 	for (let k = 0; k < nodes; k++) {
 		for (let i = 0; i < nodes; i++) {
@@ -29,6 +40,11 @@ function floyd(nodes, dis) {
 	}
 }
 
+/**
+ * 按给定概率计算得出点的设施分布
+ * @param {Object} nodeRate - 给定的概率格式
+ * @returns 该点的设施
+ */
 function nodeType(nodeRate) {
 	if (!nodeRate.type) return {};
 	if (nodeRate.rate) {
@@ -42,6 +58,11 @@ function nodeType(nodeRate) {
 	return {};
 }
 
+/**
+ * 按给定概率计算得出边的怪物分布
+ * @param {Object} edgeRate - 给点的概率格式
+ * @returns 该边的怪物
+ */
 function edgeType(edgeRate) {
 	let rate = Math.random() * 100 | 0;
 	for (let i in edgeRate) {
@@ -53,11 +74,11 @@ function edgeType(edgeRate) {
 
 /**
  * 生成n个点图，m条边的图
- * @param {number} n 
- * @param {number} m 
- * @param {Object} nodeRate 
- * @param {Object} edgeRate 
- * @returns graph
+ * @param {number} n - 点的数量
+ * @param {number} m - 边的数量
+ * @param {Object} nodeRate - 生成点的概率
+ * @param {Object} edgeRate - 生成边的概率
+ * @returns 生成的无向图
  */
 function maker(level) {
 	let n = level.nodes, m = level.edges;

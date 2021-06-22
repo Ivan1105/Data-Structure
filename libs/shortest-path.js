@@ -1,3 +1,6 @@
+/**
+ * 边
+ */
 class Edge {
 	endPoint = -1;
 	value = 0;
@@ -7,6 +10,9 @@ class Edge {
 	}
 }
 
+/**
+ * 邻接表
+ */
 class Graph {
 	head = null;
 	nodes = 0;
@@ -17,18 +23,31 @@ class Graph {
 		this.head = new Array(n);
 	}
 
+	/**
+	 * 为邻接表添加新的边
+	 * @param {Number} u - 起点
+	 * @param {Number} v - 终点
+	 * @param {Number} w - 边的权值
+	 */
 	addEdge(u, v, w) {
 		if (this.head[u] === undefined) this.head[u] = new Array();
 		this.head[u].push(new Edge(v, w));
 	}
 }
 
+/**
+ * 小根堆
+ */
 class Heap {
 	#data = new Array();
 	constructor() {
 		this.#data.push(new Edge(-1, 0));
 	}
 
+	/**
+	 * 将堆的顶点下沉到对应位置
+	 * @param {Number} x - 堆的节点编号
+	 */
 	checkdown(x) {
 		let size = this.#data.length - 1;
 		let t1 = x * 2;
@@ -49,6 +68,10 @@ class Heap {
 		}
 	}
 
+	/**
+	 * 向堆中添加新的Edge类元素
+	 * @param {Edge} obj 
+	 */
 	push(obj) {
 		this.#data.push(obj);
 		let t1 = this.#data.length - 1;
@@ -62,6 +85,9 @@ class Heap {
 		}
 	}
 
+	/**
+	 * 将堆顶元素移出堆
+	 */
 	pop() {
 		let size = this.#data.length - 1;
 		this.#data[1] = this.#data[size];
@@ -69,25 +95,37 @@ class Heap {
 		this.checkdown(1);
 	}
 
+	/**
+	 * 堆是否为空
+	 */
 	get empty() {
 		let size = this.#data.length - 1;
 		if (size < 1) return true;
 		else return false;
 	}
 
+	/**
+	 * 返回堆顶元素
+	 */
 	get top() {
 		return this.#data[1];
 	}
 }
 
+/**
+ * 堆优化的dijkstra算法
+ * @param {Graph} G - 无向图
+ * @param {Number} s - 起点
+ * @param {Number} t - 终点
+ * @returns 最短路径长度以及路线
+ */
 function dijkstra(G, s, t) {
-	const Inf = 0x7fffffff;
 	let dis = new Array(G.nodes);
 	let used = new Array(G.nodes);
 	let pre = new Array(G.nodes);
 
 	for (let i = 0; i < G.nodes; i++) {
-		dis[i] = Inf;
+		dis[i] = Infinity;
 		used[i] = false;
 		pre[i] = -1;
 	}
@@ -117,6 +155,12 @@ function dijkstra(G, s, t) {
 	return { pathway: pre, distance: dis };
 }
 
+/**
+ * 调用dijkstra算法
+ * @param {Object} obj - 无向图
+ * @param {Number} s - 起点
+ * @returns 最短路径长度以及路线
+ */
 function calcShortestPath(obj, s) {
 	let G = new Graph(obj.nodes.length, obj.edges.length);
 	for (let i in obj.edges) {

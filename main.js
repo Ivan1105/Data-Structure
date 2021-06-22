@@ -23,7 +23,7 @@ function createWindow() {
 
 	win.loadFile('index.html')
 	win.maximize();
-	win.openDevTools();
+	// win.openDevTools();
 }
 
 app.whenReady().then(() => {

@@ -23,11 +23,17 @@ class Monster {
 }
 
 const monsters = [
-    new Monster(25, 12, 0),
+    new Monster(30, 12, 0),
     new Monster(28, 15, 0),
     new Monster(50, 10, 5),
     new Monster(15, 20, 0),
-    new Monster(30, 18, 4),
-    new Monster(22, 25, 2),
-    new Monster(70, 11, 10)
+    new Monster(30, 18, 8),
+    new Monster(22, 25, 5),
+    new Monster(70, 16, 11),
+    new Monster(50, 15, 15),
+    new Monster(40, 25, 15),
+    new Monster(30, 30, 15),
+    new Monster(100, 24, 24),
+    new Monster(50, 27, 19),
+    new Monster(100, 38, 30)
 ];

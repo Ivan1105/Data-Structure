@@ -31,5 +31,8 @@ const shops = [
     new Shop(15, 1, 1),
     new Shop(15, 2),
     new Shop(15, 0, 2),
-    new Shop(30, 2, 2)
+    new Shop(30, 2, 2),
+    new Shop(50, 3),
+    new Shop(50, 0, 3),
+    new Shop(100, 2, 2)
 ];
