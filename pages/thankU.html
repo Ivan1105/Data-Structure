@@ -34,6 +34,8 @@
             height: 100%;
             display: flex;
             justify-content: center;
+            background-image: url(../src/img/cover.jpg);
+            color: white;
         }
 
         #options {
@@ -44,14 +46,31 @@
         }
 
         #options>span {
-            padding: 0 3em;
+            position: relative;
+            padding: 0.2em 1.5em;
             display: block;
-            transition: all 1s;
+            color: rgb(207, 207, 207);
             cursor: pointer;
         }
 
-        #options>span:hover {
-            background-color: cadetblue;
+        #options>span::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            background-image: url(../src/img/hover.png);
+            background-clip: border-box;
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+
+        #options>span:hover::before {
+            opacity: 1;
         }
     </style>
 </head>

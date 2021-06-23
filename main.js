@@ -13,6 +13,7 @@ function createWindow() {
 		height: 900,
 		frame: false,
 		resizable: false,
+		fullscreen: true,
 		icon: path.join(__dirname, 'SummerPockets.ico'),
 		webPreferences: {
 			nodeIntegration: false,
@@ -22,7 +23,6 @@ function createWindow() {
 	})
 
 	win.loadFile('index.html')
-	win.maximize();
 	// win.openDevTools();
 }
 
