@@ -24,14 +24,14 @@ $$
 
 ### 玩法介绍
 
-![manual-1](E:\ds\shortest-path\pages\manual-1.png)
+![manual-1](.\manual-1.png)
 
-![manual-2](E:\ds\shortest-path\pages\manual-2.png)
+![manual-2](.\manual-2.png)
 
-![manual-3](E:\ds\shortest-path\pages\manual-3.png)
+![manual-3](.\manual-3.png)
 
-![manual-4](E:\ds\shortest-path\pages\manual-4.png)
+![manual-4](.\manual-4.png)
 
-![manual-5](E:\ds\shortest-path\pages\manual-5.png)
+![manual-5](.\manual-5.png)
 
-![manual-6](E:\ds\shortest-path\pages\manual-6.png)
+![manual-6](.\manual-6.png)
